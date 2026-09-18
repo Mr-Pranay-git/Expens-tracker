@@ -1,2 +1,2 @@
 # Expens-tracker
-this is a MEARN stack expens tracker 
+this is a MERN stack expens tracker 
