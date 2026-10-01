@@ -3,10 +3,24 @@ import { LockOutlined, PhoneOutlined, UserOutlined } from '@ant-design/icons';
 import React from 'react';
 import Homelayout from '../../layout/Homelayout';
 import { Link } from 'react-router-dom';
+import axios from "axios";
+axios.defaults.baseURL = import.meta.env.VITE_BASE_URL
 
+// console.log("BASE URL:", import.meta.env.VITE_BASE_URL);
 const {Item} = Form;
 
 const Signup = () => {
+    const onFinish = async (values)=>{
+        try{
+            const {data} = await axios.post("/api/user/signup", values);
+            console.log("Respons:",data);
+        }catch(error){
+            console.log("this is an error:",error)
+    // console.log("STATUS:", error.response?.status);
+    // console.log("BACKEND ERROR:", error.response?.data);
+}
+    }
+
     return (
         <Homelayout>
             <div className='flex'>
@@ -21,11 +35,12 @@ const Signup = () => {
                     <Form
                     name='login-form'
                     layout='vertical'
+                    onFinish={onFinish}
                     >
                         
                         <Item
-                        name="fullname"
-                        label="Fullname"
+                        name="fullName"
+                        label="Full Name"
                         rules={[{required: true}]}
                         >
                             <Input prefix={<UserOutlined/>} placeholder={'Enter your fullname'} />
@@ -39,7 +54,7 @@ const Signup = () => {
                         </Item>
                         <Item
                         name="email"
-                        label="Username"
+                        label="Email"
                         rules={[{required: true}]}
                         >
                             <Input prefix={<UserOutlined/>} placeholder={'Enter your username'} />
