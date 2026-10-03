@@ -1,17 +1,17 @@
 import nodemailer from "nodemailer";
 
-const sendMail = async (email, subject, template)=>{
+export const sendMail = async (email, subject, template)=> {
     try{
         const config = nodemailer.createTransport({
             service: "gmail",
             auth:{
                 user: process.env.SENDER_EMAIL,
                 pass : process.env.SENDER_PASSWORD,
-            }
+            } 
         });
 
         const options = {
-            form :process.env.SENDER_EMAIL,
+            from :process.env.SENDER_EMAIL,
             to : email,
             subject : subject,
             html :template
@@ -19,7 +19,10 @@ const sendMail = async (email, subject, template)=>{
 
         await config.sendMail(options);
         return true
+        
     }catch(err){
-        return false;
+        console.log("MAIL ERROR:", err);
+        throw err;
+        // return false;
     }
 }

@@ -4,89 +4,151 @@ import React from 'react';
 import Homelayout from '../../layout/Homelayout';
 import { Link } from 'react-router-dom';
 import axios from "axios";
+import { useState } from 'react';
+import { toast } from 'react-toastify';
 axios.defaults.baseURL = import.meta.env.VITE_BASE_URL
 
-// console.log("BASE URL:", import.meta.env.VITE_BASE_URL);
-const {Item} = Form;
+const { Item } = Form;
 
 const Signup = () => {
-    const onFinish = async (values)=>{
+
+    const [signupForm] = Form.useForm();
+
+    const [formData, setFormData] = useState(null);
+    const [otp, setOtp] = useState(null);
+    const [loading, setLoading] = useState(false);
+
+    const onFinish = async (values) => {
+        try {
+            setLoading(true)
+            const { data } = await axios.post("/api/user/send-mail", values);
+            // console.log("Respons:",data);
+            setOtp(data.otp)
+            setFormData(values)
+        } catch (error) {
+            setOtp(null);
+            setFormData(null);
+            // console.log("STATUS:", error.response?.status);
+            // console.log("BACKEND ERROR:", error.response?.data);
+        } finally {
+            setLoading(false);
+        }
+    }
+
+    const onSignup = async (values)=>{
         try{
-            const {data} = await axios.post("/api/user/signup", values);
-            console.log("Respons:",data);
-        }catch(error){
-            console.log("this is an error:",error)
-    // console.log("STATUS:", error.response?.status);
-    // console.log("BACKEND ERROR:", error.response?.data);
-}
+            if (Number(values.otp) !== Number(otp))
+               return toast.error("OTP not match")                
+            setLoading(true);
+            await axios.post("/api/user/signup", formData);
+            toast.success("Signup success");      
+            setOtp(null);
+            setFormData(null);
+            signupForm.resetFields();
+        }catch(err){
+            toast.error(err.response ? err.response.data.message : err.message);
+        }finally{
+            setLoading(false);
+        }
+
     }
 
     return (
         <Homelayout>
             <div className='flex'>
-            <div className="w-1/2 hidden md:flex items-center justify-center">
-                <img src="./exp-img.jpg" alt="Bank" className='w-4/5 object-contain' />
-            </div>
-            <div className='w-full md:w-1/2 flex items-center justify-center p-2 md:p-6 bg-white '>
-                <Card className='w-full max-w-sm shadow-xl'>
-                    <h2 className='font-bold text-[3FF735C] tedt-2xl text-center mb:p-6 bg-white '>
-                        Track your Expense
-                    </h2>
-                    <Form
-                    name='login-form'
-                    layout='vertical'
-                    onFinish={onFinish}
-                    >
-                        
-                        <Item
-                        name="fullName"
-                        label="Full Name"
-                        rules={[{required: true}]}
-                        >
-                            <Input prefix={<UserOutlined/>} placeholder={'Enter your fullname'} />
-                        </Item>
-                        <Item
-                        name="mobile"
-                        label="Mobile"
-                        rules={[{required: true}]}
-                        >
-                            <Input prefix={<PhoneOutlined/>} placeholder={'Enter your mobile'} />
-                        </Item>
-                        <Item
-                        name="email"
-                        label="Email"
-                        rules={[{required: true}]}
-                        >
-                            <Input prefix={<UserOutlined/>} placeholder={'Enter your username'} />
-                        </Item>
+                <div className="w-1/2 hidden md:flex items-center justify-center">
+                    <img src="./exp-img.jpg" alt="Bank" className='w-4/5 object-contain' />
+                </div>
+                <div className='w-full md:w-1/2 flex items-center justify-center p-2 md:p-6 bg-white '>
+                    <Card className='w-full max-w-sm shadow-xl'>
+                        <h2 className='font-bold text-[3FF735C] tedt-2xl text-center mb:p-6 bg-white '>
+                            Track your Expense
+                        </h2>
+                        {
+                            otp ?
+                                <Form
+                                    name='otp-form'
+                                    layout='vertical'
+                                    onFinish={onSignup}
+                                >
+                                    <Item
+                                        name="otp"
+                                        label="OTP"
+                                        rules={[{ required: true }]}
+                                    >
+                                        <Input.OTP 
+                                        prefix={<UserOutlined />} 
+                                        placeholder={'Enter your fullname'} />
+                                    </Item>
+                                    <Item>
+                                        <Button
+                                            loading={loading}
+                                            type='text'
+                                            htmlType='submit'
+                                            block
+                                            className='bg-[#FF735C]! text-white! font-bold!'>
+                                            Verify Email
+                                        </Button>
+                                    </Item>
+                                </Form>
+                                : <Form
+                                    name='signup-form'
+                                    layout='vertical'
+                                    onFinish={onFinish}
+                                    form={signupForm}
+                                >
 
-                        <Item
-                        name='password'
-                        label="Password"
-                        rules={[{required: true}]}
-                        >
-                            <Input.Password prefix={<LockOutlined/>} placeholder={'Enter your Password'} />
-                        </Item>
-                        <Item>
-                            <Button
-                            type='text'
-                            htmlType='submit'
-                            block
-                            className='bg-[#FF735C]! text-white font-bold'>
-                                SignUp
-                            </Button>
-                        </Item>
-                    </Form>
-                    <div className='flex items-center justify-center'>
-                    <Link
-                    style={{textDecoration: "underline"}}
-                    className="text-[#FF735C]! font-bold"
-                    to='/'
-                    >Already have an account</Link>
-                    </div>
-                </Card>
+                                    <Item
+                                        name="fullName"
+                                        label="Full Name"
+                                        rules={[{ required: true }]}
+                                    >
+                                        <Input prefix={<UserOutlined />} placeholder={'Enter your fullname'} />
+                                    </Item>
+                                    <Item
+                                        name="mobile"
+                                        label="Mobile"
+                                        rules={[{ required: true }]}
+                                    >
+                                        <Input prefix={<PhoneOutlined />} placeholder={'Enter your mobile'} />
+                                    </Item>
+                                    <Item
+                                        name="email"
+                                        label="Email"
+                                        rules={[{ required: true }]}
+                                    >
+                                        <Input prefix={<UserOutlined />} placeholder={'Enter your username'} />
+                                    </Item>
+
+                                    <Item
+                                        name='password'
+                                        label="Password"
+                                        rules={[{ required: true }]}
+                                    >
+                                        <Input.Password prefix={<LockOutlined />} placeholder={'Enter your Password'} />
+                                    </Item>
+                                    <Item>
+                                        <Button
+                                            loading={loading}
+                                            type='text'
+                                            htmlType='submit'
+                                            block
+                                            className='bg-[#FF735C]! text-white font-bold'>
+                                            SignUp
+                                        </Button>
+                                    </Item>
+                                </Form>
+                        }
+                        <div className='flex items-center justify-center'>
+                            <Link
+                                style={{ textDecoration: "underline" }}
+                                className="text-[#FF735C]! font-bold"
+                                to='/'
+                            >Already have an account</Link>
+                        </div>
+                    </Card>
+                </div>
             </div>
-        </div>
         </Homelayout>
     )
 }
