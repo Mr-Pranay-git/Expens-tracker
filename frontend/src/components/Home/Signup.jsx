@@ -25,11 +25,12 @@ const Signup = () => {
             // console.log("Respons:",data);
             setOtp(data.otp)
             setFormData(values)
-        } catch (error) {
+        } catch (err) {
+            toast.error(err.response ? err.response.data.message : err.message);
             setOtp(null);
             setFormData(null);
-            // console.log("STATUS:", error.response?.status);
-            // console.log("BACKEND ERROR:", error.response?.data);
+            // console.log("STATUS:", err.response?.status);
+            // console.log("BACKEND ERROR:", err.response?.data);
         } finally {
             setLoading(false);
         }
