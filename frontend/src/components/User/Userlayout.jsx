@@ -31,16 +31,26 @@ const Userlayout = () => {
     overflow: 'auto',
     height: '100vh',
     position: 'sticky',
-    insetIntineStart:0,
+    insetInlineStart:0,
     top:0,
     bottom:0,
-    scrottbarWidth : 'thin',
-    scrottbarGutter: 'stable',
+    scrollbarWidth : 'thin',
+    scrollbarGutter: 'stable',
+  };
+
+  const headerStyle = {
+    position: 'sticky',
+    top:0,
+    zIndex:1,
+    width: '100%',
+    display:'flex',
+    alignItems:'center',
+    padding: 0,
   }
 
   return (
     <Layout className='min-h-screen!'>
-      <Sider collapsible collapsed={open}>
+      <Sider style={siderStyle} collapsible collapsed={open}>
         <div className=' flex items-center justify-center my-4'>
           <Image
             src='/exp-img.jpg'
@@ -58,7 +68,7 @@ const Userlayout = () => {
         />
       </Sider>
       <Layout>
-        <Header className='flex items-center justify-between px-5! bg-white! shadow!'>
+        <Header style={headerStyle} className='flex items-center justify-between px-5! bg-white! shadow!'>
           <Button
             onClick={() => setOpen(!open)}
             icon={<MenuOutlined />}
