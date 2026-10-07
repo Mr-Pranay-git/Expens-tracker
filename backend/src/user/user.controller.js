@@ -66,7 +66,7 @@ export const login = async (req, res)=>{
             secure: process.env.ENVIRONMENT === "DEV" ? false : true,
             httpOnly : true
         });
-        res.json({message: "Login success"})
+        res.json({message: "Login success", role:user.role})
 
     }catch(err){
         res.status(500).json({Error_message: err.message });

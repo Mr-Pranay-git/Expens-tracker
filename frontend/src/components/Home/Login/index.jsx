@@ -1,13 +1,15 @@
 import { Button, Card, Form, Input } from 'antd';
 import { UserOutlined, LockOutlined } from "@ant-design/icons";
 import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, Navigate, useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import axios from "axios";
 axios.defaults.baseURL = import.meta.env.VITE_BASE_URL
 const { Item } = Form;
 
 const Login = () => {
+
+    const navigate = useNavigate()
 
     const [loginForm] = Form.useForm();
     const [loading, setLoading] = useState(false);
@@ -17,7 +19,11 @@ const Login = () => {
             setLoading(true)
             const { data } = await axios.post("/api/user/login", values);
             console.log("Respons:",data);
-            toast.success("Login Success")
+            const {role} = data;
+            if(role == "admin")
+                toast.success("Admin Login Success")
+            if(role == "user")
+                return navigate("/app/user");
 
         } catch (err) {
             toast.error(err.response ?  err.response.data.message : err.message );
