@@ -82,7 +82,7 @@ const Login = () => {
                         <Link
                             style={{ textDecoration: "underline" }}
                             className='text-[#FF735C]! font-bold'
-                            to="#"
+                            to="/forgot-password"
                         >Forgot Password</Link>
 
                         <Link
