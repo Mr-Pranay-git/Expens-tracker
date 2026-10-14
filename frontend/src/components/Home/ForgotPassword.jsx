@@ -1,7 +1,7 @@
 import { Button, Card, Form, Input } from 'antd';
 import { UserOutlined, LockOutlined } from "@ant-design/icons";
 import React, { useState } from 'react';
-import { Link, Navigate, useNavigate } from 'react-router-dom';
+import { Link, Navigate, useNavigate, useSearchParams } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import axios from "axios";
 import Homelayout from '../../layout/Homelayout';
@@ -10,15 +10,29 @@ const { Item } = Form;
 
 const ForgotPassword = () => {
 
-    const navigate = useNavigate()
+    const navigate = useNavigate();
+    const [params] = useSearchParams();
 
     const [forgotForm] = Form.useForm();
     const [rePasswordForm] = Form.useForm();
 
     const [loading, setLoading] = useState(false);
-    const [token, setToken] = useState(null);
+    const [token, setToken] = useState(params.get("token"));
 
     const onFinish = async (values) => {
+        try {
+            setLoading(true)
+            await axios.post("/api/user/forgot-password", values);
+            toast.success("Please check your email to forgot password")
+        } catch (err) {
+            toast.error(err.response ? err.response.data.message : err.message);
+            // "Backend error:"err.response.data.message |          "Frontend error:" err.message
+
+        } finally {
+            setLoading(false);
+        }
+    }
+    const onChangePassword = async (values) => {
         try {
             setLoading(true)
             const { data } = await axios.post("/api/user/login", values);
@@ -54,7 +68,7 @@ const ForgotPassword = () => {
                           <Form
                             name="login-form"
                             layout='vertical'
-                            onFinish={onFinish}
+                            onFinish={onChangePassword}
                             form={rePasswordForm}
                         >
                             <Item
