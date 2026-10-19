@@ -96,3 +96,22 @@ export const forgotPassword = async (req, res)=>{
         res.status(500).json({Error_message: err.message });
     }
 }
+
+export const verifyToken = async (req, res)=>{
+    try{
+        res.json("Verification success");
+    }catch(err){
+        res.status(500).json({Error_message: err.message });
+    }
+}
+
+export const changePassword = async (req, res)=>{
+    try{
+        const {password} = req.body;
+        const encrypted = await bcrypt.hash(password.toString(), 12);
+        await UserModel.findByIdAndUpdate(req.user.id,{password: encrypted})
+        res.json("Password updated successfully");
+    }catch(err){
+        res.status(500).json({Error_message: err.message });
+    }
+}
