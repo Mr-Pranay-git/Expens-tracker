@@ -3,8 +3,7 @@ import { UserOutlined, LockOutlined } from "@ant-design/icons";
 import React, { useState } from 'react';
 import { Link, Navigate, useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
-import axios from "axios";
-axios.defaults.baseURL = import.meta.env.VITE_BASE_URL
+import http from '../../../utils/http';
 const { Item } = Form;
 
 const Login = () => {
@@ -17,7 +16,7 @@ const Login = () => {
     const onFinish = async (values) => {
         try {
             setLoading(true)
-            const { data } = await axios.post("/api/user/login", values);
+            const { data } = await http.post("/api/user/login", values);
             console.log("Respons:",data);
             const {role} = data;
             if(role == "admin")

@@ -3,10 +3,9 @@ import { LockOutlined, PhoneOutlined, UserOutlined } from '@ant-design/icons';
 import React from 'react';
 import Homelayout from '../../layout/Homelayout';
 import { Link } from 'react-router-dom';
-import axios from "axios";
 import { useState } from 'react';
 import { toast } from 'react-toastify';
-axios.defaults.baseURL = import.meta.env.VITE_BASE_URL
+import http from '../../utils/http';
 
 const { Item } = Form;
 
@@ -21,7 +20,7 @@ const Signup = () => {
     const onFinish = async (values) => {
         try {
             setLoading(true)
-            const { data } = await axios.post("/api/user/send-mail", values);
+            const { data } = await http.post("/api/user/send-mail", values);
             // console.log("Respons:",data);
             setOtp(data.otp)
             setFormData(values)
@@ -41,7 +40,7 @@ const Signup = () => {
             if (Number(values.otp) !== Number(otp))
                return toast.error("OTP not match")                
             setLoading(true);
-            await axios.post("/api/user/signup", formData);
+            await http.post("/api/user/signup", formData);
             toast.success("Signup success");      
             setOtp(null);
             setFormData(null);
