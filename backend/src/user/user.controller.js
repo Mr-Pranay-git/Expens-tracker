@@ -62,10 +62,12 @@ export const login = async (req, res)=>{
 
         const token = await createToken(user);
         res.cookie("authToken", token, {
+            httpOnly : true,
             maxAge: 86400000, //milliseconds in a day
-            domain : process.env.ENVIRONMENT === "DEV" ? "localhost" : process.env.DOMAIN,
-            secure: process.env.ENVIRONMENT === "DEV" ? false : true,
-            httpOnly : true
+            secure: process.env.ENVIRONMENT !== "DEV",
+            sameSite : process.env.Environment === "DEV" ? "lax": "none",
+            path : "/",
+            domain : undefined,
         });
         res.json({message: "Login success", role:user.role})
 
