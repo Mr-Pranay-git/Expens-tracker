@@ -14,3 +14,7 @@ export const verifyTokenGuard = async (req, res, next)=>{
     req.user = payload;
     next();
 }
+
+export const AdminUserGuard = async (req, res, next)=>{
+    next();
+}

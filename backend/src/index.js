@@ -17,7 +17,8 @@ import cors from 'cors'
 app.use(cookieParser());
 // console.log("FrontendConnect", process.env.DOMAIN )
 app.use(cors({
-    origin : process.env.DOMAIN 
+    origin : process.env.DOMAIN,
+    credentials: true,
 }));
 
 // app level middleware
