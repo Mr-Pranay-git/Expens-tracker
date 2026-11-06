@@ -21,7 +21,7 @@ userRouter.post('/forgot-password', forgotPassword);
 
 // @GET /api/user/session
 userRouter.get('/session', AdminUserGuard, (req,res)=>{
-    return  res.json({message:"success"});
+    return  res.json(req.user);
 });
 
 // @POST /api/user/verify-token

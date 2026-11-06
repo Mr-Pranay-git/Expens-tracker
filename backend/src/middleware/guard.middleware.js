@@ -14,7 +14,27 @@ export const verifyTokenGuard = async (req, res, next)=>{
     req.user = payload;
     next();
 }
+const invalid = async(res)=>{
+    res.cookie('authToken', null,{
+        httpOnly:true,
+        secure: process.env.ENVIRONMENT !== "DEV",
+        sameSite : process.env.ENVIRONMENT === "DEV"? "lax": "none",
+        path:"/", 
+        domain: undefined,
+        maxAge: 86400000,
+    })
+    res.status(400).json({message: "Bad Request"})
+}
 
 export const AdminUserGuard = async (req, res, next)=>{
+    const {authToken} = req.cookies 
+    if(!authToken)
+        return invalid(res);       
+    // Decoding the information of user logged in 
+    const payload =  await jwt.verify(authToken, process.env.AUTH_SECRET);
+    console.log(payload);
+    if(payload.role !== "user" && payload.role !== "admin")    
+        return invalid(res);
+    req.user = payload;
     next();
 }
