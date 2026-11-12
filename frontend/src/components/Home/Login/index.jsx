@@ -13,16 +13,16 @@ const Login = () => {
     const [loginForm] = Form.useForm();
     const [loading, setLoading] = useState(false);
 
-    const onFinish = async (    values) => {
+    const onFinish = async (values) => {
         try {
             setLoading(true)
             const { data } = await http.post("/api/user/login", values);
-            console.log("Respons:",data);
+            // console.log("Respons:",data);
             const {role} = data;
             if(role == "admin")
                 toast.success("Admin Login Success")
             if(role == "user")
-                return navigate("/app/user");
+                return navigate("/app/user/dashboard");
 
         } catch (err) {
             toast.error(err.response ?  err.response.data.message : err.message );

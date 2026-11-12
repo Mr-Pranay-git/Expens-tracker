@@ -8,6 +8,7 @@ import Userlayout from './components/User/Userlayout'
 import ForgotPassword from './components/Home/ForgotPassword'
 import Dashboard from './components/User/Dashboard'
 import Report from './components/User/Report'
+import Guard from './Guard'
 
 
 const App = () => {
@@ -17,7 +18,13 @@ const App = () => {
       <Route path='/' element={<Homepage/>}/>
       <Route path='/signup' element={<Signup/>}/>
       <Route path='/forgot-password' element={<ForgotPassword/>}/>
-      <Route path='/app/user' element={<Userlayout/>}>
+      <Route path='/app/user' 
+      element={<Guard 
+      endpoint="/api/user/session"
+      role="user">
+        <Userlayout/>
+      </Guard>}
+      >
        <Route path='dashboard' element={<Dashboard/>}/>
        <Route path='report' element={<Report/>}/>
 
