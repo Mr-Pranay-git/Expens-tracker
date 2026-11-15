@@ -76,6 +76,23 @@ export const login = async (req, res)=>{
     }
 }
 
+export const logout = async (req,res)=>{
+    try{
+        req.cookie('authToken', null, {
+            httpOnly:true,
+            secure: process.env.ENVIRONMENT !== "DEV",
+            sameSite: process.env.ENVIRONMENT === "DEV" ? 'lax':"none",
+            path: "/",
+            domain: undefined,
+            maxAge: 0,
+        });
+        res.status(200).json({
+            message: err.message || "Logout Success"
+        });
+    } catch(err){
+
+    }
+}
 export const forgotPassword = async (req, res)=>{
     try{
         const {email} = req.body;

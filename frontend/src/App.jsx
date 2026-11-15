@@ -1,20 +1,23 @@
-import Homepage from './components/Home'
-import {BrowserRouter, Routes, Route} from "react-router-dom" 
-import Signup from './components/Home/Signup'
-import Login from './components/Home/Login'
 import { ToastContainer } from 'react-toastify'
-import PageNotFound from './components/PageNotFound'
-import Userlayout from './components/User/Userlayout'
-import ForgotPassword from './components/Home/ForgotPassword'
-import Dashboard from './components/User/Dashboard'
-import Report from './components/User/Report'
+import {BrowserRouter, Routes, Route} from "react-router-dom" 
 import Guard from './Guard'
+import { lazy, Suspense } from "react"
+import Loader from './components/Shared/Loader';
+
+const PageNotFound = lazy(()=> import('./components/PageNotFound'));
+const Homepage = lazy(()=> import('./components/Home'));
+const Signup = lazy(()=> import('./components/Home/Signup'));
+const Userlayout = lazy(()=> import('./components/User/Userlayout'));
+const ForgotPassword = lazy(()=> import('./components/Home/ForgotPassword'));
+const Dashboard = lazy(()=> import('./components/User/Dashboard'));
+const Report = lazy(()=> import('./components/User/Report'));
 
 
 const App = () => {
   return (
     <BrowserRouter>
-    <Routes>
+    <Suspense fallback={<Loader/>}>
+      <Routes>
       <Route path='/' element={<Homepage/>}/>
       <Route path='/signup' element={<Signup/>}/>
       <Route path='/forgot-password' element={<ForgotPassword/>}/>
@@ -30,7 +33,8 @@ const App = () => {
 
       </Route>      
       <Route path='/*' element={<PageNotFound/>}/>
-    </Routes>
+      </Routes>
+    </Suspense>
     <ToastContainer/>
     </BrowserRouter>
   )

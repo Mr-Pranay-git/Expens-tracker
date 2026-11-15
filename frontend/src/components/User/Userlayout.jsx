@@ -1,10 +1,12 @@
 import { AppstoreAddOutlined, BarChartOutlined, LogoutOutlined, MenuOutlined } from '@ant-design/icons';
 import { Button, Image, Layout, Menu } from 'antd'
 import React, { useState } from 'react'
-import { Navigate, Outlet, useNavigate } from 'react-router-dom';
+import { Navigate, Outlet, useLocation, useNavigate } from 'react-router-dom';
 import useSWR from "swr";
 import fetcher from '../../utils/fetcher';
 import Loader from '../Shared/Loader';
+import http from '../../utils/http';
+import { toast } from 'react-toastify';
 
 const { Sider, Header, Content, Footer } = Layout;
 
@@ -24,8 +26,10 @@ const items = [
 const Userlayout = () => {
 
   const navigate = useNavigate();
+  const {pathname} = useLocation();
 
   const [open, setOpen] = useState(false);
+  const [loading, setLoading] = useState(false)
 
   const handleNavigate = (menu) => {
     navigate(menu.key);
@@ -53,6 +57,18 @@ const Userlayout = () => {
     padding: 0,
   }
 
+  // logout
+   const logout = async ()=>{
+    try{
+      setLoading(true);
+      await http.get("/api/user/logout");
+      navigate('/')
+      setLoading(false);
+    }catch(err){
+      toast.error(err.response ? err.response.data.message : err.message)
+      // console.log(err)
+    }
+   }
   return (
     <Layout className='min-h-screen!'>
       <Sider style={siderStyle} collapsible collapsed={open}>
@@ -66,7 +82,7 @@ const Userlayout = () => {
           />
         </div>
         <Menu
-          defaultSelectedKeys={['/app/user/dashboard']}
+          defaultSelectedKeys={[pathname]}
           theme='dark'
           items={items}
           onClick={handleNavigate}
@@ -80,6 +96,8 @@ const Userlayout = () => {
           />
           <Button
             icon={<LogoutOutlined />}
+            onClick={logout}
+            loading={loading}
           />
         </Header>
         <Content>
